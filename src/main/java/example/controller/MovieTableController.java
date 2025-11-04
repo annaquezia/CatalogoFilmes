@@ -90,8 +90,6 @@ public class MovieTableController {
         switch (algo) {
             case QUICK -> {
                 if (base.size() > 1) {
-                    // reaproveita os métodos do seu Search
-                    // Criamos um Catalogue temporário só para passar a lista para o Search sem alterar o original
                     TempCatalogue tmp = new TempCatalogue(base);
                     search.quickSort(tmp, comparator, type, 0, base.size() - 1);
                     base = tmp.movies;

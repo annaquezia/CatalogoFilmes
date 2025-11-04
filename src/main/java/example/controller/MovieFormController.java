@@ -22,14 +22,12 @@ public class MovieFormController {
         view.getSubmitButton().setOnAction(event -> {
             clearErrors();
             try {
-                // Lê dados brutos da View (Strings)
                 String title = safeTrim(view.getTextTitle());
                 String genre = safeTrim(view.getTextGenre());
                 String yearS = safeTrim(view.getTextYear());
                 String timeS = safeTrim(view.getTextTime());
                 String description = safeTrim(view.getTextDescription());
 
-                // Validações básicas
                 if (title.isEmpty()) {
                     markError(view.getTitleField());
                     throw new IllegalArgumentException("Título é obrigatório");
@@ -50,7 +48,7 @@ public class MovieFormController {
                     markError(view.getYearField());
                     throw new IllegalArgumentException("Ano deve ser numérico! ex: 1999");
                 }
-                // limite histórico razoável para filmes
+
                 if (year < 1888 || year > 2100) {
                     markError(view.getYearField());
                     throw new IllegalArgumentException("Ano fora do intervalo válido");
@@ -73,7 +71,6 @@ public class MovieFormController {
                     throw new IllegalArgumentException("A descrição é obrigatória");
                 }
 
-                // Só aqui criamos o Movie (ordem correta dos parâmetros!)
                 Movie movie = new Movie(title, year, time, genre, description);
                 catalogue.addMovie(movie);
                 System.out.println("Filme cadastrado. Total de filmes no Catálogo: " + catalogue.getMovies().size());
