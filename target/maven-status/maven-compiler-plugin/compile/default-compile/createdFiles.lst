@@ -1,0 +1,15 @@
+example/view/MovieFormView.class
+example/view/MovieTableView.class
+example/controller/MovieTableController$SortAlgo.class
+example/model/MovieComparator$1.class
+example/view/Home.class
+example/model/Movie.class
+example/controller/MovieTableController$TempCatalogue.class
+example/model/MovieComparator.class
+example/model/ComparatorType.class
+example/model/Catalogue.class
+example/model/Search.class
+example/controller/MovieTableController.class
+example/view/MovieTableView$1.class
+example/controller/MovieFormController.class
+example/Main.class

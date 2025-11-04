@@ -1,0 +1,165 @@
+/*
+ * Estilos Finais (Rosa Claro de Fundo, Rosa Forte nos Botões, Bordô nos Rótulos de Campo)
+ */
+
+/* =================================
+ * Variáveis de Cor
+ * =================================*/
+.root {
+    -fx-base-color: #fff0f5; /* Fundo Rosa Bem Clarinho (Blush) */
+    -fx-primary-color: #e83e8c; /* Rosa Principal (para botões, foco) */
+    -fx-secondary-color: #800000; /* Bordô Profundo (para fundos de header, botões secundários) */
+    -fx-highlight-color: #ffc107; /* Amarelo (para destaque ou aviso) */
+    -fx-danger-color: #dc3545; /* Vermelho para erros */
+
+    -fx-background-color: -fx-base-color;
+    -fx-font-family: "Segoe UI", "Roboto", "Arial", sans-serif;
+}
+
+/* =================================
+ * Estilos de Títulos e Layout
+ * =================================*/
+
+.vbox {
+    -fx-padding: 30px;
+    -fx-spacing: 15px;
+    -fx-background-color: -fx-base-color;
+}
+
+.hbox {
+    -fx-spacing: 15px;
+    -fx-alignment: center-left;
+    -fx-padding: 10px 0 10px 0;
+}
+
+/* 1. ESTILO GERAL PARA TODAS AS LABELS (base) */
+.label {
+    -fx-font-size: 15px;
+    -fx-text-fill: #333333;
+}
+
+/* 2. CLASSE PARA TÍTULOS DE PÁGINA (label-titulo) */
+.label-titulo {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-primary-color; /* Cor Rosa Forte */
+    -fx-padding: 0 0 15px 0;
+    -fx-border-width: 0 0 1px 0;
+    -fx-border-color: #f7d6e6;
+}
+
+/* 3. CLASSE PARA RÓTULOS DE CAMPO (label-campo) - O NOVO ESTILO! */
+.label-campo {
+    -fx-text-fill: -fx-secondary-color; /* Bordô */
+    -fx-font-weight: bold;
+    -fx-padding: 5px 0 0 0;
+}
+
+
+/* =================================
+ * Botões
+ * =================================*/
+.button {
+    -fx-padding: 10px 20px;
+    -fx-font-size: 14px;
+    -fx-font-weight: 500;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0.0, 0, 1);
+}
+
+/* CLASSE PARA BOTÕES PRIMÁRIOS (Rosa Forte) */
+.button.button-salvar {
+    -fx-background-color: -fx-primary-color;
+    -fx-text-fill: white;
+}
+
+.button.button-salvar:hover {
+    -fx-background-color: #b3306d;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0.0, 0, 2);
+}
+
+/* CLASSE PARA BOTÕES SECUNDÁRIOS (Bordô) */
+.button.button-voltar {
+    -fx-background-color: -fx-secondary-color;
+    -fx-text-fill: white;
+}
+
+.button.button-voltar:hover {
+    -fx-background-color: #6a0000;
+}
+
+.button.button-sort {
+    -fx-background-color: -fx-highlight-color;
+    -fx-text-fill: #333333;
+    -fx-padding: 8px 12px;
+    -fx-font-weight: bold;
+    -fx-effect: none;
+}
+.button.button-sort:hover {
+    -fx-background-color: #e0ac06;
+}
+
+/* Botão de Deletar (na tabela) */
+.table-row-cell .button:contains("🗑️") {
+    -fx-background-color: -fx-danger-color;
+    -fx-text-fill: white;
+    -fx-padding: 4px 8px;
+    -fx-font-size: 12px;
+    -fx-effect: none;
+}
+
+/* =================================
+ * Campos e Seletores
+ * =================================*/
+
+.text-field, .text-area, .combo-box {
+    -fx-padding: 10px;
+    -fx-border-color: #dddddd;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-background-color: white;
+}
+
+.text-field:focused, .text-area:focused, .combo-box:focused {
+    -fx-border-color: -fx-primary-color; /* Foco em Rosa Forte */
+    -fx-border-width: 2px;
+}
+
+/* Estilo de Erro */
+.error-field {
+    -fx-border-color: -fx-danger-color;
+    -fx-border-width: 2px;
+}
+
+/* =================================
+ * Tabela (Header Bordô)
+ * =================================*/
+.table-view {
+    -fx-border-color: #cccccc;
+    -fx-border-width: 1px;
+    -fx-background-color: white;
+    -fx-padding: 0;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+}
+
+.table-view .column-header,
+.table-view .column-header-background {
+    -fx-background-color: -fx-secondary-color; /* Header da tabela em Bordô */
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #fff8fb;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #f7a8d4;
+}
