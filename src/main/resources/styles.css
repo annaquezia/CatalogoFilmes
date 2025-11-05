@@ -10,7 +10,7 @@
     -fx-primary-color: #e83e8c; /* Rosa Principal (para botões, foco) */
     -fx-secondary-color: #800000; /* Bordô Profundo (para fundos de header, botões secundários) */
     -fx-highlight-color: #ffc107; /* Amarelo (para destaque ou aviso) */
-    -fx-danger-color: #dc3545; /* Vermelho para erros */
+    -fx-danger-color: #dc7781; /* Vermelho para erros */
 
     -fx-background-color: -fx-base-color;
     -fx-font-family: "Segoe UI", "Roboto", "Arial", sans-serif;

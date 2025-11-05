@@ -49,12 +49,17 @@ public class MovieTableView {
         descriptionColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getDescription()));
 
         deleteColumn = new TableColumn<>("Deletar");
+        deleteColumn.setStyle("-fx-alignment: CENTER;");
         deleteColumn.setCellFactory(col -> new TableCell<>() {
-            private Button deleteButton = new Button("🗑️");
+            private final Button deleteButton = new Button("🗑️");
+
             {
+                deleteButton.setStyle("-fx-background-color: #ffaba8;");
                 deleteButton.setOnAction(event -> {
                     Movie selectedMovie = getTableView().getItems().get(getIndex());
-                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Deseja realmente deletar o filme?", ButtonType.YES, ButtonType.NO);
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+                            "Deseja realmente deletar o filme \"" + selectedMovie.getTitle() + "\"?",
+                            ButtonType.YES, ButtonType.NO);
                     alert.setHeaderText("Deletar filme");
                     alert.showAndWait().ifPresent(response -> {
                         if (response == ButtonType.YES) {
@@ -65,7 +70,17 @@ public class MovieTableView {
                 });
             }
 
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(deleteButton);
+                }
+            }
         });
+
 
         root.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         VBox.setVgrow(tableView, Priority.ALWAYS);
