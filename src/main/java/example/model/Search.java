@@ -41,24 +41,30 @@ public class Search {
     public void quickSort(Catalogue catalogue, MovieComparator movieComparator, ComparatorType type, int left, int right) {
         if (left < right) {
             int pivotIndex = partition(catalogue, movieComparator, type,  left, right);
-            quickSort(catalogue, movieComparator, type, left, pivotIndex - 1);
+            quickSort(catalogue, movieComparator, type, left, pivotIndex);
             quickSort(catalogue, movieComparator, type, pivotIndex + 1, right);
         }
     }
 
     public int partition(Catalogue catalogue, MovieComparator movieComparator, ComparatorType type, int left, int right) {
         ArrayList<Movie> movies = catalogue.getMovies();
-        Movie pivot = movies.get(right);
-        int i = left - 1;
 
-        for (int j = left; j < right; j++) {
-            if (movieComparator.forType(type, movies.get(j), pivot) <= 0) {
+        Movie pivot = movies.get(left);
+        int i = left - 1;
+        int j = right + 1;
+
+        while (true) {
+            do {
                 i++;
-                swap(movies, i, j);
+            } while (movieComparator.forType(type, movies.get(i), pivot) < 0);
+            do {
+                j--;
+            } while (movieComparator.forType(type, movies.get(j), pivot) > 0);
+            if (i >= j) {
+                return j;
             }
+            swap(movies, i, j);
         }
-        swap(movies, i + 1, right);
-        return i + 1;
     }
 
     private void swap(ArrayList<Movie> movies, int i, int j) {
