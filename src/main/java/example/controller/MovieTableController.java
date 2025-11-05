@@ -7,10 +7,8 @@ import example.model.MovieComparator;
 import example.model.Search;
 import example.view.MovieTableView;
 import javafx.application.Platform;
-import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableView;
 
 import java.lang.reflect.Field;
@@ -24,11 +22,8 @@ public class MovieTableController {
     private final MovieComparator comparator;
     private final Runnable onBack;
 
-    // snapshot que mostramos na tabela (já que Catalogue usa ArrayList)
     private final ObservableList<Movie> tableData = FXCollections.observableArrayList();
 
-    // ponteiro para o TableView privado da view (via reflection)
-    @SuppressWarnings("unchecked")
     private TableView<Movie> table() {
         try {
             Field f = view.getClass().getDeclaredField("tableView");
@@ -39,7 +34,6 @@ public class MovieTableController {
         }
     }
 
-    // injeta o catalogue privado da view (para o botão 🗑️ funcionar lá dentro)
     private void injectCatalogueIntoView() {
         try {
             Field f = view.getClass().getDeclaredField("catalogue");
@@ -61,11 +55,9 @@ public class MovieTableController {
         this.comparator = comparator;
         this.onBack = onBack;
 
-        // constrói os nós internos da view
         this.view.show();
 
-        // conecta o TableView da view a um ObservableList nosso
-        injectCatalogueIntoView(); // necessário para o delete da própria view
+        injectCatalogueIntoView();
         table().setItems(tableData);
 
         wire();
@@ -84,7 +76,6 @@ public class MovieTableController {
     private enum SortAlgo { QUICK, BUBBLE, INSERT }
 
     private void resort(ComparatorType type, SortAlgo algo) {
-        // trabalhamos em uma cópia (ArrayList) porque Search usa índices mutáveis
         List<Movie> base = new ArrayList<>(catalogue.getMovies());
 
         switch (algo) {
@@ -106,23 +97,16 @@ public class MovieTableController {
                 base = tmp.movies;
             }
         }
-
-        // atualiza a mesma instância observável que está ligada à tabela
         tableData.setAll(base);
     }
 
     private void refreshFromCatalogue() {
-        // puxa os filmes atuais do catálogo para a tabela
         tableData.setAll(catalogue.getMovies());
 
-        // força um refresh visual (às vezes útil após trocar cellFactory/itens)
         Platform.runLater(() -> table().refresh());
     }
 
-    /**
-     * Adaptador mínimo só para os métodos do Search que esperam um Catalogue.
-     * NÃO altera seu Catalogue real; apenas encapsula a lista que estamos ordenando.
-     */
+
     private static class TempCatalogue extends Catalogue {
         private final ArrayList<Movie> movies;
 
