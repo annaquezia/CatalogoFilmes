@@ -1,0 +1,266 @@
+Index: src/main/java/example/model/Search.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package example.model;\n\nimport java.util.ArrayList;\n\npublic class Search {\n    private Catalogue catalogue;\n    private MovieComparator movieComparator;\n\n    public Search() {}\n\n    public void bubbleSort(Catalogue catalogue, MovieComparator movieComparator, ComparatorType type) {\n        ArrayList<Movie> movies = catalogue.getMovies();\n        int size = movies.size();\n\n        for (int i = 0; i < size; i++) {\n            for (int j = 1; j < (size - i); j++) {\n                if (movieComparator.forType(type, movies.get(j - 1), movies.get(j)) > 0) {\n                    Movie temp = movies.get(j - 1);\n                    movies.set(j - 1, movies.get(j));\n                    movies.set(j, temp);\n                }\n            }\n        }\n    }\n\n    public void insertionSort(Catalogue catalogue, MovieComparator movieComparator, ComparatorType type) {\n        ArrayList<Movie> movies = catalogue.getMovies();\n        int size = movies.size();\n\n        for (int i = 0; i < size; i++) {\n            Movie currentMovie = movies.get(i);\n            int j = i - 1;\n            while (j >= 0 && movieComparator.forType(type, movies.get(j), currentMovie) > 0) {\n                movies.set(j + 1, movies.get(j));\n                j--;\n            }\n            movies.set(j + 1, currentMovie);\n        }\n    }\n\n    public void quickSort(Catalogue catalogue, MovieComparator movieComparator, ComparatorType type, int left, int right) {\n        if (left < right) {\n            int pivotIndex = partition(catalogue, movieComparator, type,  left, right);\n            quickSort(catalogue, movieComparator, type, left, pivotIndex - 1);\n            quickSort(catalogue, movieComparator, type, pivotIndex + 1, right);\n        }\n    }\n\n    public int partition(Catalogue catalogue, MovieComparator movieComparator, ComparatorType type, int left, int right) {\n        ArrayList<Movie> movies = catalogue.getMovies();\n        Movie pivot = movies.get(right);\n        int i = left - 1;\n\n        for (int j = left; j < right; j++) {\n            if (movieComparator.forType(type, movies.get(j), pivot) <= 0) {\n                i++;\n                swap(movies, i, j);\n            }\n        }\n        swap(movies, i + 1, right);\n        return i + 1;\n    }\n\n    private void swap(ArrayList<Movie> movies, int i, int j) {\n        Movie temp = movies.get(i);\n        movies.set(i, movies.get(j));\n        movies.set(j, temp);\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/example/model/Search.java b/src/main/java/example/model/Search.java
+--- a/src/main/java/example/model/Search.java	(revision 57c0af6ca4770a111f9016908d046fbd10112f75)
++++ b/src/main/java/example/model/Search.java	(date 1762360476405)
+@@ -41,24 +41,30 @@
+     public void quickSort(Catalogue catalogue, MovieComparator movieComparator, ComparatorType type, int left, int right) {
+         if (left < right) {
+             int pivotIndex = partition(catalogue, movieComparator, type,  left, right);
+-            quickSort(catalogue, movieComparator, type, left, pivotIndex - 1);
++            quickSort(catalogue, movieComparator, type, left, pivotIndex);
+             quickSort(catalogue, movieComparator, type, pivotIndex + 1, right);
+         }
+     }
+ 
+     public int partition(Catalogue catalogue, MovieComparator movieComparator, ComparatorType type, int left, int right) {
+         ArrayList<Movie> movies = catalogue.getMovies();
+-        Movie pivot = movies.get(right);
++
++        Movie pivot = movies.get(left);
+         int i = left - 1;
++        int j = right + 1;
+ 
+-        for (int j = left; j < right; j++) {
+-            if (movieComparator.forType(type, movies.get(j), pivot) <= 0) {
++        while (true) {
++            do {
+                 i++;
+-                swap(movies, i, j);
+-            }
++            } while (movieComparator.forType(type, movies.get(i), pivot) < 0);
++            do {
++                j--;
++            } while (movieComparator.forType(type, movies.get(j), pivot) > 0);
++            if (i >= j) {
++                return j;
++            }
++            swap(movies, i, j);
+         }
+-        swap(movies, i + 1, right);
+-        return i + 1;
+     }
+ 
+     private void swap(ArrayList<Movie> movies, int i, int j) {
+Index: src/main/java/example/model/Catalogue.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package example.model;\n\nimport javafx.collections.FXCollections;\nimport javafx.collections.ObservableList;\n\nimport java.util.ArrayList;\nimport java.util.HashMap;\n\npublic class Catalogue {\n    private HashMap<String, Movie> catalogue = new HashMap<>();\n    private ArrayList<Movie> movies = new ArrayList<>();\n    private ObservableList<Movie> movieObservableList = FXCollections.observableArrayList();\n\n    public Catalogue() {}\n\n    public void addMovie(Movie movie) {\n        Movie newMovie = catalogue.get(movie.getTitle());\n        if (newMovie == null) {\n            catalogue.put(movie.getTitle(), movie);\n            movies.add(movie);\n        } else {\n            throw new IllegalArgumentException(\"Filme já foi adicionado na lista\");\n        }\n    }\n\n    public Movie getMovie(String title) {\n        return catalogue.get(title);\n    }\n\n    public ArrayList<Movie> getMovies() {\n        return movies;\n    }\n\n    public Movie removeMovie(String title) {\n        Movie movie = catalogue.get(title);\n        if (movie != null) {\n            int removed = movie.getTitle().compareToIgnoreCase(title);\n            if (removed == 0) {\n                catalogue.remove(title);\n                movies.remove(movie);\n            } else {\n                throw new IllegalArgumentException(\"Filme não encontrado\");\n            }\n        }\n        return movie;\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/example/model/Catalogue.java b/src/main/java/example/model/Catalogue.java
+--- a/src/main/java/example/model/Catalogue.java	(revision 57c0af6ca4770a111f9016908d046fbd10112f75)
++++ b/src/main/java/example/model/Catalogue.java	(date 1762360351868)
+@@ -2,46 +2,141 @@
+ 
+ import javafx.collections.FXCollections;
+ import javafx.collections.ObservableList;
+-
+ import java.util.ArrayList;
+-import java.util.HashMap;
+ 
+ public class Catalogue {
+-    private HashMap<String, Movie> catalogue = new HashMap<>();
+-    private ArrayList<Movie> movies = new ArrayList<>();
+-    private ObservableList<Movie> movieObservableList = FXCollections.observableArrayList();
++    private Movie[] movies;
++    private String[] keys;
++    private int size;            // quantidade de filmes
++    private int capacity;        // tamanho atual da tabela
++    private static final double FATOR_CARGA = 0.75;
++    private final ArrayList<Movie> movieList = new ArrayList<>();
++    private final ObservableList<Movie> movieObservableList = FXCollections.observableArrayList();
++
++    public Catalogue() {
++        this.capacity = 8;
++        this.keys = new String[capacity];
++        this.movies = new Movie[capacity];
++        this.size = 0;
++    }
+ 
+-    public Catalogue() {}
++    // hash compatível com equalsIgnoreCase
++    private int hash(String title) {
++        String t = title.toLowerCase();
++        int soma = 0;
++        for (int i = 0; i < t.length(); i++) {
++            soma += t.charAt(i);
++        }
++        return Math.abs(soma) % capacity;
++    }
++
++    // ===== API =====
+ 
+     public void addMovie(Movie movie) {
+-        Movie newMovie = catalogue.get(movie.getTitle());
+-        if (newMovie == null) {
+-            catalogue.put(movie.getTitle(), movie);
+-            movies.add(movie);
+-        } else {
+-            throw new IllegalArgumentException("Filme já foi adicionado na lista");
++        if (movie == null || movie.getTitle() == null) {
++            throw new IllegalArgumentException("Filme ou título inválido");
+         }
++        if ((double) size / capacity >= FATOR_CARGA) {
++            resize(capacity * 2);
++        }
++        putInternal(movie);
++        movieList.add(movie);
+     }
+ 
+     public Movie getMovie(String title) {
+-        return catalogue.get(title);
+-    }
+-
+-    public ArrayList<Movie> getMovies() {
+-        return movies;
++        if (title == null) return null;
++        int index = hash(title);
++        for (int i = 0; i < capacity; i++) {
++            int pos = (index + i) % capacity;
++            if (keys[pos] == null) return null;
++            if (keys[pos].equalsIgnoreCase(title)) return movies[pos];
++        }
++        return null;
+     }
+ 
+     public Movie removeMovie(String title) {
+-        Movie movie = catalogue.get(title);
+-        if (movie != null) {
+-            int removed = movie.getTitle().compareToIgnoreCase(title);
+-            if (removed == 0) {
+-                catalogue.remove(title);
+-                movies.remove(movie);
+-            } else {
+-                throw new IllegalArgumentException("Filme não encontrado");
++        if (title == null) return null;
++        int index = hash(title);
++        for (int i = 0; i < capacity; i++) {
++            int pos = (index + i) % capacity;
++            if (keys[pos] == null) return null;
++            if (keys[pos].equalsIgnoreCase(title)) {
++                Movie removed = movies[pos];
++                keys[pos] = null;
++                movies[pos] = null;
++                size--;
++                // tira também da lista usada pelo Search
++                movieList.remove(removed);
++                // e da ObservableList, se estiver usando
++                // movieObservableList.remove(removed);
++                rehash();
++                return removed;
+             }
+         }
+-        return movie;
++        return null;
+     }
+-}
++
++    public ArrayList<Movie> getMovies() {
++        return movieList; // mesma instância sempre, para ordenar in place
++    }
++
++    public ObservableList<Movie> getMoviesObservable() {
++        movieObservableList.clear();
++        movieObservableList.addAll(movieList);
++        return movieObservableList;
++    }
++
++    private void putInternal(Movie movie) {
++        String title = movie.getTitle();
++        int index = hash(title);
++        for (int i = 0; i < capacity; i++) {
++            int pos = (index + i) % capacity;
++
++            if (keys[pos] == null) {
++                keys[pos] = title;
++                movies[pos] = movie;
++                size++;
++                return;
++            }
++            if (keys[pos].equalsIgnoreCase(title)) { // duplicado
++                throw new IllegalArgumentException("Filme já foi adicionado na lista");
++            }
++        }
++        throw new IllegalStateException("Tabela cheia");
++    }
++
++    private void rehash() {
++        String[] oldKeys = keys;
++        Movie[] oldMovies = movies;
++
++        keys = new String[capacity];
++        movies = new Movie[capacity];
++        int oldSize = size;
++        size = 0;
++
++        for (int i = 0; i < oldKeys.length; i++) {
++            if (oldKeys[i] != null) {
++                putInternal(oldMovies[i]);
++            }
++        }
++        size = oldSize;
++    }
++
++    private void resize(int newCapacity) {
++        String[] oldKeys = keys;
++        Movie[] oldMovies = movies;
++
++        capacity = newCapacity;
++        keys = new String[capacity];
++        movies = new Movie[capacity];
++        int oldSize = size;
++        size = 0;
++
++        for (int i = 0; i < oldKeys.length; i++) {
++            if (oldKeys[i] != null) {
++                putInternal(oldMovies[i]);
++            }
++        }
++        size = oldSize;
++    }
++}
+\ No newline at end of file
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"AutoImportSettings\">\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\n  </component>\n  <component name=\"ChangeListManager\">\n    <list default=\"true\" id=\"6c26c481-b90d-4daf-abef-a10bc38ed0c0\" name=\"Changes\" comment=\"\">\n      <change beforePath=\"$PROJECT_DIR$/src/main/java/example/controller/MovieFormController.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/src/main/java/example/controller/MovieFormController.java\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/src/main/java/example/controller/MovieTableController.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/src/main/java/example/controller/MovieTableController.java\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/target/classes/example/controller/MovieFormController.class\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/target/classes/example/controller/MovieFormController.class\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/target/classes/example/controller/MovieTableController$TempCatalogue.class\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/target/classes/example/controller/MovieTableController$TempCatalogue.class\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/target/classes/example/controller/MovieTableController.class\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/target/classes/example/controller/MovieTableController.class\" afterDir=\"false\" />\n    </list>\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\n  </component>\n  <component name=\"FileTemplateManagerImpl\">\n    <option name=\"RECENT_TEMPLATES\">\n      <list>\n        <option value=\"Enum\" />\n        <option value=\"Class\" />\n        <option value=\"CSS File\" />\n      </list>\n    </option>\n  </component>\n  <component name=\"Git.Settings\">\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\n  </component>\n  <component name=\"ProjectColorInfo\">{\n  &quot;associatedIndex&quot;: 1\n}</component>\n  <component name=\"ProjectId\" id=\"34ycDL3gU9jOHhJTDzuBseXCNIu\" />\n  <component name=\"ProjectLevelVcsManager\">\n    <ConfirmationsSetting value=\"2\" id=\"Add\" />\n  </component>\n  <component name=\"ProjectViewState\">\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\n    <option name=\"showLibraryContents\" value=\"true\" />\n  </component>\n  <component name=\"PropertiesComponent\">{\n  &quot;keyToString&quot;: {\n    &quot;Application.HelloFX.executor&quot;: &quot;Run&quot;,\n    &quot;Application.Main.executor&quot;: &quot;Run&quot;,\n    &quot;Application.javaFX.executor&quot;: &quot;Run&quot;,\n    &quot;Maven.javafx.executor&quot;: &quot;Run&quot;,\n    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,\n    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,\n    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,\n    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,\n    &quot;git-widget-placeholder&quot;: &quot;main&quot;,\n    &quot;ignore.preview.features.used&quot;: &quot;true&quot;,\n    &quot;last_opened_file_path&quot;: &quot;/Users/annasantos/Documents/github/CatalogoFilmes&quot;,\n    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,\n    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,\n    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,\n    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,\n    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,\n    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,\n    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,\n    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,\n    &quot;project.structure.side.proportion&quot;: &quot;0.40344828&quot;,\n    &quot;settings.editor.selected.configurable&quot;: &quot;advanced.settings&quot;,\n    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;\n  }\n}</component>\n  <component name=\"RecentsManager\">\n    <key name=\"MoveFile.RECENT_KEYS\">\n      <recent name=\"$PROJECT_DIR$/src/main/resources\" />\n    </key>\n  </component>\n  <component name=\"RunManager\" selected=\"Maven.javafx\">\n    <configuration name=\"Main\" type=\"Application\" factoryName=\"Application\" temporary=\"true\" nameIsGenerated=\"true\">\n      <option name=\"MAIN_CLASS_NAME\" value=\"example.Main\" />\n      <module name=\"CatalogoFilmes\" />\n      <extension name=\"coverage\">\n        <pattern>\n          <option name=\"PATTERN\" value=\"example.*\" />\n          <option name=\"ENABLED\" value=\"true\" />\n        </pattern>\n      </extension>\n      <method v=\"2\">\n        <option name=\"Make\" enabled=\"true\" />\n      </method>\n    </configuration>\n    <configuration name=\"javaFX\" type=\"Application\" factoryName=\"Application\">\n      <option name=\"MAIN_CLASS_NAME\" value=\"example.HelloFX\" />\n      <module name=\"CatalogoFilmes\" />\n      <method v=\"2\">\n        <option name=\"Make\" enabled=\"true\" />\n      </method>\n    </configuration>\n    <configuration name=\"javafx\" type=\"MavenRunConfiguration\" factoryName=\"Maven\">\n      <MavenSettings>\n        <option name=\"myGeneralSettings\" />\n        <option name=\"myRunnerSettings\" />\n        <option name=\"myRunnerParameters\">\n          <MavenRunnerParameters>\n            <option name=\"cmdOptions\" />\n            <option name=\"profiles\">\n              <set />\n            </option>\n            <option name=\"goals\">\n              <list>\n                <option value=\"javafx:run\" />\n              </list>\n            </option>\n            <option name=\"multimoduleDir\" />\n            <option name=\"pomFileName\" />\n            <option name=\"profilesMap\">\n              <map />\n            </option>\n            <option name=\"projectsCmdOptionValues\">\n              <list />\n            </option>\n            <option name=\"resolveToWorkspace\" value=\"false\" />\n            <option name=\"workingDirPath\" value=\"$PROJECT_DIR$\" />\n          </MavenRunnerParameters>\n        </option>\n      </MavenSettings>\n      <method v=\"2\" />\n    </configuration>\n    <list>\n      <item itemvalue=\"Application.javaFX\" />\n      <item itemvalue=\"Application.Main\" />\n      <item itemvalue=\"Maven.javafx\" />\n    </list>\n    <recent_temporary>\n      <list>\n        <item itemvalue=\"Application.Main\" />\n      </list>\n    </recent_temporary>\n  </component>\n  <component name=\"SharedIndexes\">\n    <attachedChunks>\n      <set>\n        <option value=\"bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.28293.39\" />\n        <option value=\"bundled-js-predefined-d6986cc7102b-09060db00ec0-JavaScript-IU-251.28293.39\" />\n      </set>\n    </attachedChunks>\n  </component>\n  <component name=\"TaskManager\">\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\n      <changelist id=\"6c26c481-b90d-4daf-abef-a10bc38ed0c0\" name=\"Changes\" comment=\"\" />\n      <created>1749039709181</created>\n      <option name=\"number\" value=\"Default\" />\n      <option name=\"presentableId\" value=\"Default\" />\n      <updated>1749039709181</updated>\n      <workItem from=\"1762189132414\" duration=\"283000\" />\n      <workItem from=\"1762189435032\" duration=\"96000\" />\n      <workItem from=\"1762190322998\" duration=\"8986000\" />\n      <workItem from=\"1762201101895\" duration=\"7608000\" />\n      <workItem from=\"1762267712260\" duration=\"7837000\" />\n      <workItem from=\"1762278285579\" duration=\"12240000\" />\n      <workItem from=\"1762292636413\" duration=\"1348000\" />\n    </task>\n    <servers />\n  </component>\n  <component name=\"TypeScriptGeneratedFilesManager\">\n    <option name=\"version\" value=\"3\" />\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 57c0af6ca4770a111f9016908d046fbd10112f75)
++++ b/.idea/workspace.xml	(date 1762360459282)
+@@ -5,11 +5,11 @@
+   </component>
+   <component name="ChangeListManager">
+     <list default="true" id="6c26c481-b90d-4daf-abef-a10bc38ed0c0" name="Changes" comment="">
+-      <change beforePath="$PROJECT_DIR$/src/main/java/example/controller/MovieFormController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/example/controller/MovieFormController.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/src/main/java/example/controller/MovieTableController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/example/controller/MovieTableController.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/target/classes/example/controller/MovieFormController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/example/controller/MovieFormController.class" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/target/classes/example/controller/MovieTableController$TempCatalogue.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/example/controller/MovieTableController$TempCatalogue.class" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/target/classes/example/controller/MovieTableController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/example/controller/MovieTableController.class" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/main/java/example/model/Catalogue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/example/model/Catalogue.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/main/java/example/model/Search.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/example/model/Search.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/target/classes/example/model/Catalogue.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/example/model/Catalogue.class" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/target/classes/example/model/Search.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/example/model/Search.class" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -154,6 +154,9 @@
+       <workItem from="1762267712260" duration="7837000" />
+       <workItem from="1762278285579" duration="12240000" />
+       <workItem from="1762292636413" duration="1348000" />
++      <workItem from="1762295706557" duration="52000" />
++      <workItem from="1762347556127" duration="3305000" />
++      <workItem from="1762359911759" duration="543000" />
+     </task>
+     <servers />
+   </component>
